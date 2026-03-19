@@ -1,0 +1,66 @@
+# =========================
+# Build directories
+# =========================
+/build/
+/out/
+/bin/
+/lib/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
+compile_commands.json
+
+# =========================
+# Visual Studio
+# =========================
+.vs/
+*.vcxproj*
+*.sln
+*.user
+*.userosscache
+*.suo
+*.ipch
+*.pdb
+*.ilk
+*.log
+
+# Debug/Release folders
+Debug/
+Release/
+x64/
+x86/
+
+# =========================
+# Windows
+# =========================
+Thumbs.db
+Desktop.ini
+
+# =========================
+# Temporary / Editor
+# =========================
+*.tmp
+*.temp
+*.swp
+*.bak
+*~
+
+# =========================
+# SDL / runtime
+# =========================
+*.dll
+
+# =========================
+# Assets (optional rule)
+# =========================
+# Uncomment if you generate assets
+# assets/generated/
+
+# =========================
+# Git submodules (keep SDL source)
+# =========================
+# DO NOT ignore external/SDL3 if using submodule
