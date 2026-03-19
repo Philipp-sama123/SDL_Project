@@ -1,0 +1,3 @@
+C:/Users/p_stampfer/Documents/start/SDL_Project/build/CMakeFiles/SDL3App.dir
+C:/Users/p_stampfer/Documents/start/SDL_Project/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/p_stampfer/Documents/start/SDL_Project/build/CMakeFiles/ZERO_CHECK.dir
