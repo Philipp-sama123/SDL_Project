@@ -1,7 +1,0 @@
-C:/Users/p_stampfer/Documents/start/SDL_Project/build/CMakeFiles/SDL3App.dir
-C:/Users/p_stampfer/Documents/start/SDL_Project/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/p_stampfer/Documents/start/SDL_Project/build/CMakeFiles/ZERO_CHECK.dir
-C:/Users/p_stampfer/Documents/start/SDL_Project/build/external/SDL3/CMakeFiles/SDL3-shared.dir
-C:/Users/p_stampfer/Documents/start/SDL_Project/build/external/SDL3/CMakeFiles/SDL3_test.dir
-C:/Users/p_stampfer/Documents/start/SDL_Project/build/external/SDL3/CMakeFiles/SDL_uclibc.dir
-C:/Users/p_stampfer/Documents/start/SDL_Project/build/external/SDL3/CMakeFiles/ALL_BUILD.dir
