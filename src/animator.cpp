@@ -1,8 +1,8 @@
 #include "Animator.h"
 
-void Animator::AddAnimation(AnimState state, const Animation& anim)
+void Animator::AddAnimation(AnimState animState, const Animation& anim)
 {
-    animations[state] = anim;
+    animations[animState] = anim;
 }
 
 void Animator::SetState(AnimState newState)
@@ -17,32 +17,55 @@ void Animator::SetState(AnimState newState)
 
 void Animator::Update(float deltaTime)
 {
-    const Animation& anim = animations[state];
+    auto it = animations.find(state);
+    if (it == animations.end())
+        return;
+
+    const Animation& anim = it->second;
+    if (anim.frameCount <= 0 || anim.frameDuration <= 0.0f)
+        return;
 
     frameTime += deltaTime;
 
-    if (frameTime >= anim.frameDuration)
+    while (frameTime >= anim.frameDuration)
     {
-        frameTime = 0.0f;
-        currentFrame = (currentFrame + 1) % anim.frameCount;
+        frameTime -= anim.frameDuration;
+
+        if (anim.loop)
+        {
+            currentFrame = (currentFrame + 1) % anim.frameCount;
+        }
+        else
+        {
+            if (currentFrame < anim.frameCount - 1)
+                ++currentFrame;
+        }
     }
 }
 
 void Animator::Render(SDL_Renderer* renderer, float x, float y, float scale, bool flipX)
 {
-    const Animation& anim = animations[state];
+    auto it = animations.find(state);
+    if (it == animations.end())
+        return;
 
-    SDL_FRect src;
-    src.x = static_cast<float>(currentFrame * anim.frameWidth);
-    src.y = 0.0f;
-    src.w = static_cast<float>(anim.frameWidth);
-    src.h = static_cast<float>(anim.frameHeight);
+    const Animation& anim = it->second;
+    if (!anim.texture || anim.frameWidth <= 0 || anim.frameHeight <= 0)
+        return;
 
-    SDL_FRect dst;
-    dst.x = x;
-    dst.y = y;
-    dst.w = static_cast<float>(anim.frameWidth) * scale;
-    dst.h = static_cast<float>(anim.frameHeight) * scale;
+    SDL_FRect src{
+        static_cast<float>(currentFrame * anim.frameWidth),
+        0.0f,
+        static_cast<float>(anim.frameWidth),
+        static_cast<float>(anim.frameHeight)
+    };
+
+    SDL_FRect dst{
+        x,
+        y,
+        static_cast<float>(anim.frameWidth) * scale,
+        static_cast<float>(anim.frameHeight) * scale
+    };
 
     SDL_FlipMode flip = flipX ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
