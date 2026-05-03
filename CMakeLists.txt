@@ -1,63 +1,98 @@
 cmake_minimum_required(VERSION 3.20)
-project(SDL_Project LANGUAGES CXX)
 
+project(SDL_Project
+        VERSION 1.0
+        LANGUAGES CXX
+)
+
+# -------------------------
+# Global settings
+# -------------------------
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# ---- Disable optional features BEFORE adding SDL_image ----
+option(SDL_SHARED "Build SDL as shared" ON)
+
+# -------------------------
+# Dependencies (modern approach)
+# -------------------------
+include(FetchContent)
+
+FetchContent_Declare(
+        SDL3
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+        GIT_TAG preview-3.1.8
+)
+
+FetchContent_Declare(
+        SDL3_image
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
+        GIT_TAG preview-3.1.0
+)
+
 set(SDLIMAGE_AVIF OFF CACHE BOOL "" FORCE)
+set(SDLIMAGE_WEBP OFF CACHE BOOL "" FORCE)
 
-# ---- SDL ----
-add_subdirectory(external/SDL3)
+FetchContent_MakeAvailable(SDL3 SDL3_image)
 
-# ---- SDL_image ----
-add_subdirectory(external/SDL_image)
-
-# ---- Game ----
+# -------------------------
+# Game target
+# -------------------------
 add_executable(SDL_Project
-    src/main.cpp
-    src/Animator.cpp
+        src/main.cpp
+        src/Animator.cpp
 )
 
-# ---- Link dependencies ----
+target_include_directories(SDL_Project PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
 target_link_libraries(SDL_Project PRIVATE
-    SDL3::SDL3
-    SDL3_image::SDL3_image
+        SDL3::SDL3
+        SDL3_image::SDL3_image
 )
 
-# ---- Includes ----
-target_include_directories(SDL_Project PRIVATE src)
+# -------------------------
+# Assets handling (cross-platform safe)
+# -------------------------
+add_custom_command(TARGET SDL_Project POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/assets
+        $<TARGET_FILE_DIR:SDL_Project>/assets
+)
 
-# ---- Compiler warnings ----
-if(MSVC)
+# -------------------------
+# Warnings (cross-platform)
+# -------------------------
+if (MSVC)
     target_compile_options(SDL_Project PRIVATE /W4 /permissive-)
 else()
     target_compile_options(SDL_Project PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
-# ---- Copy SDL DLL (Windows) ----
-if(WIN32)
+# -------------------------
+# macOS bundle support (optional)
+# -------------------------
+if (APPLE)
+    set_target_properties(SDL_Project PROPERTIES
+            MACOSX_BUNDLE TRUE
+    )
+endif()
+
+# -------------------------
+# Windows runtime DLL copy (only when needed)
+# -------------------------
+if (WIN32)
     add_custom_command(TARGET SDL_Project POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:SDL3::SDL3>
             $<TARGET_FILE_DIR:SDL_Project>
     )
-endif()
-# ---- Copy IMG SDL DLL (Windows) ----
-if(WIN32 AND TARGET SDL3_image::SDL3_image)
+
     add_custom_command(TARGET SDL_Project POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:SDL3_image::SDL3_image>
             $<TARGET_FILE_DIR:SDL_Project>
     )
 endif()
-# ---- Copy Images to 
-add_custom_command(TARGET SDL_Project POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/assets
-        $<TARGET_FILE_DIR:SDL_Project>/assets
-)
-
-set_target_properties(SDL_Project PROPERTIES
-    VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:SDL_Project>"
-)
