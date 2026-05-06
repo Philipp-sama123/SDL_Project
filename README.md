@@ -156,10 +156,10 @@ cmake --preset windows-debug -DSDLIMAGE_AVIF=OFF -DSDLIMAGE_WEBP=OFF
 SDL_Project/
 ├── CMakeLists.txt          # The main build recipe
 ├── CMakePresets.json       # Platform-specific build settings
-├── README.md              # This friendly guide!
-├── src/                   # Your C++ code lives here
-│   ├── main.cpp          # Where your program starts
-│   ├── Animator.cpp      # Animation magic happens here
+├── README.md
+├── src/                   # C++ code lives here
+│   ├── main.cpp          # Where program starts
+│   ├── Animator.cpp      # Animation logic
 │   └── Animator.h        # Animation system header
 ├── assets/               # Game stuff (images, sounds, etc.)
 │   └── textures/        # Your image files
